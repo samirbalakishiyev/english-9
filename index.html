@@ -2314,7 +2314,7 @@ function mqLearn(T,mode,idx){mode=mode||'list';idx=idx||0;msTop();const W=T.lear
 
 
 /* ================= 🌐 Google Cədvəl (Kod.gs): qeydiyyat, blok, rəylər, günün qeydi, müəllimin dəyişiklikləri ================= */
-const SHEET_URL='BURAYA-SKRIPT-LINKINI-YAZIN';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbz3Vs_VS1T0wO3L6P6OBohxBLRUaZp8HuiMWuI54O0-SjKGaJSliwAL9ynUeJPj6X4o/exec';
 const sheetReady=()=>/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(SHEET_URL);
 async function api(body,get){const url=get?SHEET_URL+'?'+new URLSearchParams(body)+'&_='+Date.now():SHEET_URL;
  const r=await fetch(url,get?{}:{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});return r.json()}
