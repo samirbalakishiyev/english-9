@@ -2363,7 +2363,7 @@ function register(err){setTop(false);const u=ME()||{};let role=u.rol||'student';
   if(ad.length<2||soyad.length<2){m.textContent='Ad və soyadı tam yazın.';return}
   if(!(yas>=4&&yas<=99)){m.textContent='Yaşı rəqəmlə yazın (məs: 15).';return}
   if(!telOK(tel)){m.textContent='Telefon nömrəsi düzgün deyil. Nümunə: 050 123 45 67';return}
-  if(tel===SAMIR_TEL&&!unlocked()){m.textContent='Bu, Samir müəllimin nömrəsidir. Öz nömrənizi yazın.';return}
+  if(tel===SAMIR_TEL&&!unlocked()){m.innerHTML='Bu, Samir müəllimin nömrəsidir. Öz nömrənizi yazın.<br><button type="button" class="btn p" id="iamt" style="margin-top:10px">🔑 Mən Samir müəlliməm — şifrə ilə gir</button>';document.getElementById('iamt').onclick=teacherGate;return}
   const b=app.querySelector('#rg button[type=submit]');b.disabled=true;m.textContent='…';
   SJ('user',{ad,soyad,rol:role,tel,yas,at:Date.now()});
   try{const o=await ping();if(o&&o.blok)return blocked()}catch(x){}
