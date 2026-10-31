@@ -2366,11 +2366,16 @@ function register(err){setTop(false);const u=ME()||{};let role=u.rol||'student';
   if(tel===SAMIR_TEL&&!unlocked()){m.textContent='Bu, Samir müəllimin nömrəsidir. Öz nömrənizi yazın.';return}
   const b=app.querySelector('#rg button[type=submit]');b.disabled=true;m.textContent='…';
   SJ('user',{ad,soyad,rol:role,tel,yas,at:Date.now()});
-  try{const o=await ping();if(o&&o.blok)return blocked()}catch(x){}
+  try{const o=await ping();if(o&&o.gone)return;if(o&&o.blok)return blocked()}catch(x){}
   home();notePull();stPull()}}
 async function ping(){const u=ME();if(!u||!sheetReady())return null;
  const o=await api({a:'ping',tel:u.tel,ad:u.ad,soyad:u.soyad,rol:isT(u.rol)?'Müəllim':'Şagird',yas:u.yas||'',qeyd:u.at||'',sayt:'English 9'});
+ if(o&&o.gone){SJ('user',null);SJ('blok',0);SJ('fbs',null);FBS=null;SJ('gone',1);gone();return{ok:true,gone:true}}
  if(o&&o.ok)SJ('blok',o.blok?1:0);return o}
+function gone(){setTop(false);
+ app.innerHTML=`<div class="soon-box" style="text-align:center"><h2>🚫 Qeydiyyat mümkün deyil</h2><p class="lead" style="margin:8px 0 14px">Qeydiyyatdan keçmək üçün Samir müəllimlə əlaqə saxlayın.</p>
+  <div class="btns"><a class="btn xwa" href="${esc(waLink(SAMIR_TEL))}" target="_blank" rel="noopener">${WAI} ${SAMIR_SHOW}</a><button class="btn s" type="button" id="gback">← Qeydiyyat səhifəsi</button></div></div>`;
+ document.getElementById('gback').onclick=()=>{SJ('gone',0);register()}}
 function blocked(){setTop(false);const u=ME()||{};
  app.innerHTML=`<div class="soon-box" style="text-align:center"><h2>🔒 Giriş bağlanıb</h2><p class="lead" style="margin:8px 0 14px">Davam etmək üçün Samir müəllimə yazın.</p>
   <div class="btns"><a class="btn xwa" href="${esc(waLink(SAMIR_TEL,'Salam, Samir müəllim! English 9-da hesabım bağlanıb. Ad: '+(u.ad||'')+' '+(u.soyad||'')))}" target="_blank" rel="noopener">${WAI} ${SAMIR_SHOW}</a><button class="btn s" type="button" id="rck">↻ Yenidən yoxla</button></div></div>`;
@@ -2497,7 +2502,7 @@ async function tUsers(fresh){const box=document.getElementById('tbody');const ke
     <div class="hint">Qeydiyyat: ${esc(fmtDate(r.qeyd))} · Son giriş: ${esc(fmtDate(r.son))}</div>
     ${TP.ren===String(r.tel)?`<div class="form" style="margin-top:8px"><div class="x2"><label>Ad<input type="text" id="ra-${T}" value="${esc((r.nm||r.ad+' '+r.soyad).split(' ')[0])}"></label><label>Soyad<input type="text" id="rs-${T}" value="${esc((r.nm||r.ad+' '+r.soyad).split(' ').slice(1).join(' '))}"></label></div>
      <label>Düzgün nömrə (boş qoyun — dəyişmir)<input type="tel" id="rt-${T}" value="${esc(r.tel2?showTel(r.tel2):'')}"></label><div class="frow"><button class="btn p sm rsv" type="button" data-tel="${T}">💾 Yadda saxla</button>${r.nm||r.tel2?`<button class="btn s sm rrs" type="button" data-tel="${T}">↩︎ Qaytar</button>`:''}<button class="btn s sm rcx" type="button">✕</button></div></div>`:''}
-    <div class="xbtns"><button class="btn ${r.blok?'p':'s'} sm ublk" type="button" data-tel="${T}">${r.blok?'🔓 Blokdan çıxar':'🔒 Blokla'}</button><button class="btn s sm upay" type="button" data-tel="${T}">💳 ${r.elaqe?'Ödəyib ✓':'Ödədi'}</button><button class="btn s sm uren" type="button" data-tel="${T}">✏️</button>
+    <div class="xbtns"><button class="btn ${r.blok?'p':'s'} sm ublk" type="button" data-tel="${T}">${r.blok?'🔓 Blokdan çıxar':'🔒 Blokla'}</button><button class="btn s sm upay" type="button" data-tel="${T}">💳 ${r.elaqe?'Ödəyib ✓':'Ödədi'}</button><button class="btn s sm uren" type="button" data-tel="${T}">✏️</button><button class="btn s sm udel" type="button" data-tel="${T}" style="color:var(--bad)">🗑 Sil</button>
      <a class="btn s sm uwa" data-tel="${T}" data-auto="${wtx?1:''}" href="${esc(waLink(tl,wtx))}" target="_blank" rel="noopener">${WAI}${wtx?' 📝':''}</a>${r.blok?`<button class="btn s sm usent" type="button" data-tel="${T}" title="mesaj göndərildi">${sent?'✅':'☐'}</button>`:''}</div></div>`}).join(''):'<p class="lead">Heç kim tapılmadı.</p>'}`;
  const g=id=>document.getElementById(id),R=tel=>rows.find(x=>String(x.tel)===String(tel));
  g('urf').onclick=()=>tUsers(true);
@@ -2509,6 +2514,7 @@ async function tUsers(fresh){const box=document.getElementById('tbody');const ke
  box.querySelectorAll('.ublk').forEach(b=>b.onclick=()=>{const r=R(b.dataset.tel);act2(b,{a:'block',tel:r.tel,v:!r.blok},()=>{r.blok=!r.blok;if(!r.blok&&r.ab==='avto')r.ab='istisna';xtoast(r.blok?'🔒 Bloklandı':'🔓 Blokdan çıxarıldı')})});
  box.querySelectorAll('.upay').forEach(b=>b.onclick=()=>{const r=R(b.dataset.tel);if(r.elaqe&&!twice(b,'Ödənişi sil?'))return;act2(b,{a:'elaqe',tel:r.tel,v:!r.elaqe},x=>{r.elaqe=x.t||''})});
  box.querySelectorAll('.uren').forEach(b=>b.onclick=()=>{TP.ren=TP.ren===b.dataset.tel?'':b.dataset.tel;tUsers()});
+ box.querySelectorAll('.udel').forEach(b=>b.onclick=()=>{if(!b.dataset.armed){b.dataset.armed=1;b.textContent='❗ Silinsin? Yenə bas';return}act2(b,{a:'udel',tel:b.dataset.tel},()=>{rows.splice(rows.findIndex(x=>String(x.tel)===b.dataset.tel),1);const m=LJ('wasent',{});delete m[b.dataset.tel];SJ('wasent',m);xtoast('🗑 Silindi')})});
  box.querySelectorAll('.rcx').forEach(b=>b.onclick=()=>{TP.ren='';tUsers()});
  const ren=(b,reset)=>{const tel=b.dataset.tel,r=R(tel),v=id=>((document.getElementById(id+'-'+tel)||{}).value||'').trim().replace(/\s+/g,' ');let nm='',t2='';
   if(!reset){if(!v('ra')){xtoast('Ad boş ola bilməz.');return}nm=(v('ra')+' '+v('rs')).trim();t2=normTel(v('rt'));if(t2&&t2.length!==9){xtoast('Nömrə 9 rəqəm olmalıdır.');return}if(nm===(r.ad+' '+r.soyad).trim())nm='';if(t2===String(r.tel))t2=''}
@@ -2543,6 +2549,7 @@ window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.return
 function boot(){const u=ME();
  if(!sheetReady()){home();return}
  stPull();
+ if(LJ('gone',0)&&!unlocked())return gone();
  if(!u&&!unlocked())return register();
  if(u&&String(u.tel)===SAMIR_TEL&&!unlocked())return telFix();
  if(LJ('blok',0)&&!unlocked())blocked();else home();
