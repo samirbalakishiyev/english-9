@@ -515,7 +515,9 @@ footer b{color:var(--teal-d)}
 .sgblock{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;border-radius:20px;padding:16px 18px;margin:0 0 16px;background:linear-gradient(135deg,#FFE9A8,#FFCF3F);color:#1E3A6E;box-shadow:0 5px 0 #C99A10}
 .sgblock .sgi{font-size:36px}.sgblock .sgt{flex:1;display:flex;flex-direction:column}.sgblock b{font:700 22px var(--display)}.sgblock small{font-weight:800;color:#5C4300}
 .sgblock .sgp{background:#1E3A6E;color:#FFCF3F;border-radius:99px;padding:4px 12px;font-weight:900}.sgblock .sgp.ok{background:#22A06B;color:#fff}
-.sgimg{margin:0 auto 12px;max-width:520px;border-radius:16px;overflow:hidden;box-shadow:0 6px 18px rgba(30,58,110,.12);background:#fff}.sgimg img{display:block;width:100%;height:auto}
+.sgimg{margin:0 auto 8px;width:fit-content;max-width:100%;border-radius:14px;overflow:hidden;box-shadow:0 4px 12px rgba(30,58,110,.12);background:#fff}.sgimg img{display:block;max-width:100%;width:auto;height:auto;max-height:clamp(150px,30vh,300px);margin:0 auto}
+.sgq .gq{padding:8px 12px;margin-bottom:8px}.sgq .opts{gap:6px}.sgq .opt{padding:8px 10px;min-height:0}.sgq .qtop{margin-bottom:6px}
+@media (max-height:720px){.sgq .opt{padding:6px 9px;font-size:14.5px}.sgq .opt .L{width:24px;height:24px;font-size:14px}.sgq .gq{padding:6px 10px}.sgq .gp{font-size:14px}}
 </style>
 <div id="top"></div>
 <main class="wrap" id="app"></main>
@@ -696,7 +698,7 @@ function slotHTML(){const a=STATE.ad;
   if(a.title||a.text)return `<div class="slot ad"><span class="sun"></span><span class="k">Elan</span>${a.title?`<h3>${esc(a.title)}</h3>`:''}${a.text?`<p>${esc(a.text)}</p>`:''}</div>`;
   return `<div class="slot art">${COVER_L}</div>`}
 function setTop(isHome){
-  clearTimeout(autoT);
+  clearTimeout(autoT);app.classList.remove('sgq');
   if(isHome){top_.innerHTML=`<header class="cover"><div class="wrap cover-in">
     <div class="mark">${RAYS_L}<div class="mk"><h1 class="eng">ENGL<span>i</span>SH</h1><span class="hlt">Buraxılış imtahanına hazırlıq</span><span class="by">Created by <b>Samir Balakişiyev</b></span></div>${RAYS_R}</div>
     ${slotHTML()}<div class="slot art r">${COVER_R}</div>
@@ -1356,6 +1358,8 @@ function tqDraw(){
    ${op?'<p class="hint">Bütün düzgün variantları seç və "Yoxla" düyməsinə bas.</p>':''}</div>
   ${op?'':`<div class="opts g">${q.o.map((o,j)=>`<button class="opt" type="button" data-o="${j}"><span class="L">${GL[j]}</span><span>${fmt(o)}</span></button>`).join('')}</div>`}
   <div id="gx"></div><div class="nextbar" id="nb">${op?'<button class="btn p" type="button" id="ock">Yoxla</button>':''}</div>`;
+  app.classList.toggle('sgq',!!q.img);
+  if(q.img){const im=app.querySelector('.sgimg img'),fit=()=>{if(!im.isConnected)return;window.scrollTo(0,0);im.style.maxHeight='none';const last=[...app.querySelectorAll('.opt')].pop();if(!last)return;const over=last.getBoundingClientRect().bottom+10-window.innerHeight;const cur=im.getBoundingClientRect().height;im.style.maxHeight=Math.max(95,Math.min(320,cur-over))+'px'};im.complete?fit():im.addEventListener('load',fit,{once:true});let big=false;im.style.cursor='zoom-in';im.onclick=()=>{big=!big;if(big){im.style.maxHeight='none';im.style.cursor='zoom-out'}else{im.style.cursor='zoom-in';fit()}}}
   document.getElementById('bk').onclick=()=>{clearTimeout(autoT);TQ.back()};
   if(op)document.getElementById('ock').onclick=e=>{e.stopPropagation();tqOpen()};
   else app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>tqAnswer(b));
