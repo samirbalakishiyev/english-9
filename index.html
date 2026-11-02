@@ -2527,7 +2527,7 @@ function unlocked(){return!!LJ('tkey','')}
 const TKEY=()=>LJ('tkey','');
 const AB_FROM=1793390400000,AB_DAYS=3,AB_AGE=25;
 function abTag(r){if(r.ab==='istisna')return'<span class="xpill ok">✓ istisna</span>';if(r.ab==='avto'&&r.blok)return'<span class="xpill bad">⏳ avtoblok</span>';
- if(r.blok||r.elaqe||!(+r.qeyd>=AB_FROM))return'';if(!(isT(r.rol)||(+r.yas||0)>AB_AGE))return'';const left=Math.ceil((+r.qeyd+AB_DAYS*864e5-Date.now())/864e5);return left>0?`<span class="xpill">⏳ ${left} gün</span>`:''}
+ if(r.blok||r.elaqe||!(+r.qeyd>=AB_FROM))return'';if(!(+r.qeyd>=1793637600000||isT(r.rol)||(+r.yas||0)>AB_AGE))return'';const left=Math.ceil((+r.qeyd+AB_DAYS*864e5-Date.now())/864e5);return left>0?`<span class="xpill">⏳ ${left} gün</span>`:''}
 const TP={f:'all',q:'',ren:'',fbf:'all',rows:null,fb:null};
 const waTpl=()=>LJ('watpl','');
 const waSent=tel=>LJ('wasent',{})[tel]||0;
@@ -2558,7 +2558,7 @@ async function tUsers(fresh){const box=document.getElementById('tbody');const ke
  g('wtc').onclick=e=>{e.preventDefault();SJ('wasent',{});tUsers()};
  const act2=async(b,body,ok)=>{b.disabled=true;try{const r=await api({key,...body});if(r&&r.ok)ok(r);else xtoast('Alınmadı. Skripti yeniləmisiniz?')}catch(e){xtoast('Alınmadı. İnterneti yoxlayın.')}tUsers()};
  box.querySelectorAll('.ublk').forEach(b=>b.onclick=()=>{const r=R(b.dataset.tel);act2(b,{a:'block',tel:r.tel,v:!r.blok},()=>{r.blok=!r.blok;if(!r.blok&&r.ab==='avto')r.ab='istisna';xtoast(r.blok?'🔒 Bloklandı':'🔓 Blokdan çıxarıldı')})});
- box.querySelectorAll('.upay').forEach(b=>b.onclick=()=>{const r=R(b.dataset.tel);if(r.elaqe&&!twice(b,'Ödənişi sil?'))return;act2(b,{a:'elaqe',tel:r.tel,v:!r.elaqe},x=>{r.elaqe=x.t||''})});
+ box.querySelectorAll('.upay').forEach(b=>b.onclick=()=>{const r=R(b.dataset.tel);if(r.elaqe&&!twice(b,'Ödənişi sil?'))return;act2(b,{a:'elaqe',tel:r.tel,v:!r.elaqe},x=>{r.elaqe=x.t||'';if(x.unb){r.blok=false;r.ab=''}})});
  box.querySelectorAll('.uren').forEach(b=>b.onclick=()=>{TP.ren=TP.ren===b.dataset.tel?'':b.dataset.tel;tUsers()});
  box.querySelectorAll('.udel').forEach(b=>b.onclick=()=>{if(!b.dataset.armed){b.dataset.armed=1;b.textContent='❗ Silinsin? Yenə bas';return}act2(b,{a:'udel',tel:b.dataset.tel},()=>{rows.splice(rows.findIndex(x=>String(x.tel)===b.dataset.tel),1);const m=LJ('wasent',{});delete m[b.dataset.tel];SJ('wasent',m);xtoast('🗑 Silindi')})});
  box.querySelectorAll('.rcx').forEach(b=>b.onclick=()=>{TP.ren='';tUsers()});
