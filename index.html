@@ -2428,7 +2428,7 @@ function gone(){setTop(false);
   <div class="btns"><a class="btn xwa" href="${esc(waLink(SAMIR_TEL))}" target="_blank" rel="noopener">${WAI} ${SAMIR_SHOW}</a><button class="btn s" type="button" id="gback">← Qeydiyyat səhifəsi</button></div></div>`;
  document.getElementById('gback').onclick=()=>{SJ('gone',0);register()}}
 function blocked(){setTop(false);const u=ME()||{};
- app.innerHTML=`<div class="soon-box" style="text-align:center"><h2>🔒 Giriş bağlanıb</h2><p class="lead" style="margin:8px 0 14px">Davam etmək üçün Samir müəllimə yazın.</p>
+ app.innerHTML=`<div class="soon-box" style="text-align:center"><h2>📢 Hörmətli istifadəçi!</h2><p class="lead" style="margin:8px 0 8px;font-weight:800">1 illik abunə haqqı <b>10 AZN</b> təşkil edir.</p><p class="lead" style="margin:0 0 8px">Hesabınızın aktivliyini qorumaq və xidmətdən fasiləsiz istifadə etmək üçün bizimlə əlaqə saxlamağınız xahiş olunur.</p><p class="lead" style="margin:0 0 14px;font-weight:800">Təşəkkür edirik!</p>
   <div class="btns"><a class="btn xwa" href="${esc(waLink(SAMIR_TEL,'Salam, Samir müəllim! English 9-da hesabım bağlanıb. Ad: '+(u.ad||'')+' '+(u.soyad||'')))}" target="_blank" rel="noopener">${WAI} ${SAMIR_SHOW}</a><button class="btn s" type="button" id="rck">↻ Yenidən yoxla</button></div></div>`;
  document.getElementById('rck').onclick=async()=>{try{const o=await ping();if(o&&o.ok&&!o.blok)return home()}catch(e){}xtoast('Hələ bağlıdır')}}
 async function checkAccess(){if(!ME()||!sheetReady())return;
